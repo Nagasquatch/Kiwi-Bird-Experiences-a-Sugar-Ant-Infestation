@@ -33,10 +33,10 @@ class Player(pygame.sprite.Sprite):
             self.rect.left = 0
         elif self.rect.right > 800:
             self.rect.right = 800
-        if self.rect.top <= 100:
-            self.rect.top = 100
-        elif self.rect.bottom >= 500:
-            self.rect.bottom = 500
+        if self.rect.top <= 0:
+            self.rect.top = 0
+        elif self.rect.bottom >= 600:
+            self.rect.bottom = 600
 
 class Opponent(pygame.sprite.Sprite):
     def __init__(self):
@@ -56,9 +56,9 @@ class Opponent(pygame.sprite.Sprite):
     def update(self):
         direction = random.randint(0,1)
         if direction == 1:
-            self.rect.move_ip(random.randint(-1,1),self.speed)
+            self.rect.move_ip(random.randint(-5,5),self.speed)
         elif direction == 0:
-            self.rect.move_ip(random.randint(-1,1),-self.speed)
+            self.rect.move_ip(random.randint(-5,5),-self.speed)
         if self.rect.right < 0:
                 self.kill()
                 
@@ -97,6 +97,8 @@ pygame.time.set_timer(ADDOPPONENT, 250)
 #surf.fill((255, 255, 255))
 #rect = surf.get_rect()
 
+score = 0
+
 health = 300
 
 running = True
@@ -126,7 +128,7 @@ while running:
             new_opponent = Opponent()
             opponents.add(new_opponent)
             all_sprites.add(new_opponent)
-
+            
     #Draw background
     screen.blit(background,(0,0))
 
@@ -145,30 +147,21 @@ while running:
     basicfont=pygame.font.SysFont(None,20)
     text=basicfont.render("Health: " + str(health),True,(255,0,0))
     screen.blit(text,(30,30))
+
+    score+=1
+    
+    basicfont=pygame.font.SysFont(None,20)
+    text=basicfont.render("Score: " + str(score),True,(0,0,255))
+    screen.blit(text,(270,30)) 
     
     for entity in all_sprites:
         screen.blit(entity.surf, entity.rect)
 
-    if health > 270:
-        j=1.4
-    elif health > 240:
-        j=1.3
-    elif health > 210:
-        j=1.2
-    elif health > 180:
-        j=1.1
-    elif health > 150:
-        j=1
-    elif health > 120:
-        j=0.9
-    elif health > 90:
-        j=0.8
-    elif health > 60:
-        j=0.7
-    elif health > 30:
-        j=0.6
+    if health > 150:
+        j=2
+        player.update(pressed_keys)
     elif health > 0:
-        j=0.5
+        j=1
 
     #Kill player if player and opponent collide
     if pygame.sprite.spritecollideany(player, opponents):
